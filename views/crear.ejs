@@ -1,0 +1,14 @@
+<%- include("template/cabecera", {tituloWeb:'Crear nueva mascota'}) %>
+    <div class="container">
+        <h1>Crear</h1>
+        <!--El action es la ruta que vamos a procesar, en este caso mascotas(vease router Mascotas.js)
+            sI NO COLOCAMOS EL POST se enviara a traves del get y se procesara router.get no router.post-->
+        <form action="/mascotas" method="POST">
+            <input type="text" placeholder="agregar nombre" class="form-control my-2" name="nombre">
+            <input type="text" placeholder="agregar descripcion" class="form-control my-2" name="descripcion">
+            <button class="btn btn-success btn-block" type="submit">Agregar </button>
+        </form>
+    </div>
+  
+
+    <%- include("template/footer") %>

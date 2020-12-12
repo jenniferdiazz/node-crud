@@ -1,0 +1,98 @@
+<%- include("template/cabecera", {tituloWeb:'Detalle de mascota'}) %>
+    <div class="container">
+        <h1>Detalle mascota</h1>
+        <!--El mensaje viene de router mascota-->
+        <% if (error) { %>
+            <p><%= mensaje %></p>
+            <a href="/mascotas" class="btn btn-dark btn-block">Volver a Mascotas </a>
+        <% } %>
+        <% if (!error) { %>
+            <!--Para hacer el put utilizaremos el formulario en un eventlistener-->
+            <form id="formularioEditar" data-id="<%= mascota.id %>">
+                <input type="text" class="form-control my-2" name="nombre" id="nombreInput" value="<%= mascota.nombre %>">
+                <input type="text" class="form-control my-2" name="descripcion" id="descripcionInput" value="<%= mascota.descripcion %>">
+                <button class="btn btn-warning btn-block" type="submit">Editar</button>
+            </form>
+            <br>
+            <button class="btn btn-danger btn-sm mt-5" id="btnEliminar" data-id="<%= mascota.id %>">Eliminar</button>
+            <!-- <table class="table">
+                <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Nombre</th>
+                      <th scope="col">Descripcion</th>
+                      <th scope="col">Accion</th>
+                    </tr>
+                  </thead>
+                <tbody>
+                            <tr>
+                                <th scope="row"> <%= mascota.id %> </th>
+                                <td><%= mascota.nombre %></td>
+                                <td><%= mascota.descripcion %></td>
+                                <td></td>
+                              </tr>                              
+                </tbody>
+              </table>          -->
+        <% } %>      
+    </div>
+  
+
+    <%- include("template/footer") %>
+
+    <script>
+        //captura el id
+        const btnEliminar = document.querySelector('#btnEliminar')
+        btnEliminar.addEventListener('click', async()=>{
+            //dataset tomará lo que esta en data-   ... en este caso data-id
+            const id= btnEliminar.dataset.id
+            
+            try{
+                //se espera el fech quien recibe la url que vamos a eliminar
+                const data = await fetch(`/mascotas/${id}`,{
+                    method:'delete'
+                })
+                //recordar que la respuesta viene en json
+                const res= await data.json()
+                //se trae de la db
+                //console.log(res)
+                if(res.estado){
+                    window.location.href='/mascotas'
+                }else{
+                    console.log(res)
+                }
+
+            }catch(error){
+                console.log(error)
+
+            }
+        }) 
+        //devolvera el primer elemento encontrado
+        const formularioEditar = document.querySelector('#formularioEditar')
+        formularioEditar.addEventListener('submit',async(e)=>{
+            e.preventDefault()
+            //en nombre usamos nombre, en descripcion usamos id
+            const nombre= formularioEditar.elements['nombre'].value
+            const descripcion= document.querySelector('#descripcionInput').value
+            const id = formularioEditar.dataset.id
+            
+            
+                const data = await fetch(`/mascotas/${id}`,{
+                    method:'PUT',
+                    headers:{
+                        'Content-Type':'application/json'
+                         // 'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: JSON.stringify({nombre, descripcion})
+                })
+                const res = await data.json()
+                console.log(res)
+                
+                if(res.estado){
+                    window.location.href='/mascotas'
+                }else{
+                    console.log(res)
+                }
+
+            
+        })   
+    </script>
